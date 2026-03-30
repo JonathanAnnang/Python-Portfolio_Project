@@ -1,38 +1,42 @@
 import subprocess
 import sys
 import os
+import logging
+
+base_path = os.path.dirname(os.path.abspath(__file__))
+log_path = os.path.join(base_path, "logs", "pipeline.log")
+
+logging.basicConfig(
+    filename=log_path,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 def run_stage(script_name):
     script_path = os.path.join("scripts", script_name)
-    print(f"\n>>> EXECUTION STAGE: {script_name}")
-    
-    
+
+    logging.info(f"Running stage: {script_name}")
+
     result = subprocess.run([sys.executable, script_path], capture_output=True, text=True)
-    
+
     if result.returncode != 0:
-        print(f"!!! PIPELINE FAILED at {script_name} !!!")
-        print(f"Error details: {result.stderr}")
+        logging.error(f"Pipeline failed at {script_name}: {result.stderr}")
+        print(result.stderr)
         sys.exit(1)
     else:
+        logging.info(f"{script_name} completed successfully")
         print(result.stdout)
 
 if __name__ == "__main__":
-    print("========================================")
-    print("   STARTING DATA PIPELINE    ")
-    print("========================================")
-    
-    # 1. Ingest (Extract)
+    print("Starting Data Pipeline...\n")
+
     run_stage("ingest.py")
-    
-    # 2. Clean (Transform - Part 1)
+    print("data injestion complete")
     run_stage("clean.py")
-    
-    # 3. Transform (Transform - Part 2)
+    print("data cleaning complete")
     run_stage("transform.py")
-    
-    # 4. Load (Load)
+    print("data transformation complete")
     run_stage("load.py")
-    
-    print("========================================")
-    print("   PIPELINE COMPLETED SUCCESSFULLY      ")
-    print("========================================")
+    print("data loading complete")
+
+    print("\nPipeline completed successfully")
