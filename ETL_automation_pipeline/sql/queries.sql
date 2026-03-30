@@ -35,3 +35,34 @@ SELECT
 FROM survey_responses
 WHERE income_band = 'High'
 ORDER BY income DESC;
+
+
+
+--Find the Duplicates
+
+SELECT respondent_id, COUNT(*) AS count
+FROM survey_responses
+GROUP BY respondent_id
+HAVING COUNT(*) > 1;
+
+--Remove Duplicates
+
+WITH CTE AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY respondent_id ORDER BY id) AS rn
+    FROM survey_responses
+)
+DELETE FROM CTE
+WHERE rn > 1;
+
+--Verify It’s Clean
+
+SELECT respondent_id, COUNT(*) AS count
+FROM survey_responses
+GROUP BY respondent_id
+HAVING COUNT(*) > 1;
+
+
+--Add the UNIQUE Constraint
+ALTER TABLE survey_responses
+ADD CONSTRAINT unique_respondent UNIQUE (respondent_id);
