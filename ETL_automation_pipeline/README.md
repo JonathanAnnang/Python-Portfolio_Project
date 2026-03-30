@@ -1,52 +1,80 @@
+📊 Survey Data Pipeline (Python + SQL Server)
+Overview
 
+This project simulates a real-world data engineering workflow for processing multi-country survey data. It demonstrates how raw data can be ingested, cleaned, transformed, and loaded into a structured SQL Server database for analytics.
 
-📊 Automated Survey Data Pipeline (ETL)
-A modular Python-based ETL pipeline for multi-country survey data ingestion and SQL Server integration.
-
-🎯 Overview
-This project automates the extraction, transformation, and loading (ETL) of survey research data. It was designed to replace manual data cleaning processes, ensuring 100% schema consistency and reducing data preparation time by automating validation and feature engineering.
-
-🛠️ Tech Stack
-Language: Python 3.12+
-
-Libraries: Pandas (Data Manipulation), PyODBC (Database Connection), Dotenv (Security)
-
-Database: Microsoft SQL Server (SSMS)
-
-Environment: Virtual Environments (venv) for dependency isolation
+The pipeline is designed with scalability, data quality, and automation in mind.
 
 🚀 Key Features
-Automated Data Cleaning: Handles outliers (e.g., age validation), standardizes country codes, and manages missing values.
-
-Feature Engineering: Automatically generates age_groups, income_bands, and calculates weighted response_scores.
-
-Enterprise Security: Implements .env for secrets management and Windows Authentication for secure SQL access.
-
-Robust Logging: Centralized execution tracking with error handling and success verification.
-
-Schema Validation: Strict column-matching to prevent "broken" loads into production tables.
-
-📂 Project Structure
-Plaintext
-ETL_project/
+End-to-end ETL pipeline (Extract, Transform, Load)
+Incremental data loading (prevents duplicate records)
+Automated data cleaning and validation
+Multi-country dataset standardization
+SQL Server integration (SSMS)
+Data integrity enforcement using constraints
+Modular pipeline design (separate scripts per stage)
+🧱 Architecture
+Raw Data (CSV)
+   ↓
+Ingestion (Python)
+   ↓
+Cleaning & Validation
+   ↓
+Transformation (feature engineering)
+   ↓
+SQL Server (Data Warehouse)
+📁 Project Structure
+project/
+│
 ├── data/
-│   ├── raw/           # Original survey CSVs
-│   └── processed/     # Cleaned and Transformed outputs
+│   ├── raw/
+│   ├── cleaned/
+│
 ├── scripts/
-│   ├── ingest.py      # Data Acquisition
-│   ├── clean.py       # Validation & Deduplication
-│   ├── transform.py   # Feature Engineering
-│   └── load.py        # SQL Server Loading Logic
-├── main_pipeline.py   # Orchestration Script
-├── .env               # Database Credentials (Hidden)
-└── requirements.txt   # Dependency List
-⚙️ Setup & Installation
-Clone the repo: git clone <your-repo-link>
+│   ├── ingest.py
+│   ├── clean.py
+│   ├── transform.py
+│   ├── load.py
+│
+├── .env
+└── README.md
+⚙️ Technologies Used
+Python (Pandas, PyODBC)
+SQL Server (SSMS)
+Power BI (for future visualization)
+Excel (data exploration)
+🧠 Key Engineering Concepts Demonstrated
+Incremental Loading
 
-Create Venv: python -m venv venv
+Only new records are inserted into the database by checking existing respondent_id, preventing duplication.
 
-Install Dependencies: pip install -r requirements.txt
+Data Cleaning
+Handling missing values
+Standardizing formats
+Removing duplicates
+Data Integrity
+SQL constraints (UNIQUE keys)
+Deduplication logic using SQL window functions
 
-Configure Environment: Create a .env file with your DB_SERVER and DB_NAME.
+📌 Example SQL Deduplication
+WITH CTE AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY respondent_id ORDER BY id) AS rn
+    FROM survey_responses
+)
+DELETE FROM CTE
+WHERE rn > 1;
 
-Run Pipeline: python main_pipeline.py
+📈 Future Improvements
+Add orchestration (Airflow)
+Deploy pipeline to cloud (Azure/AWS)
+Add real-time ingestion
+Build dashboards in Power BI
+💡 Why This Project Matters
+
+This project reflects real-world data engineering challenges:
+
+messy data
+duplicate records
+inconsistent formats
+need for automation
