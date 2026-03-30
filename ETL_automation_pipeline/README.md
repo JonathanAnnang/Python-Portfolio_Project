@@ -23,21 +23,7 @@ Cleaning & Validation
 Transformation (feature engineering)
    ↓
 SQL Server (Data Warehouse)
-📁 Project Structure
-project/
-│
-├── data/
-│   ├── raw/
-│   ├── cleaned/
-│
-├── scripts/
-│   ├── ingest.py
-│   ├── clean.py
-│   ├── transform.py
-│   ├── load.py
-│
-├── .env
-└── README.md
+
 ⚙️ Technologies Used
 Python (Pandas, PyODBC)
 SQL Server (SSMS)
