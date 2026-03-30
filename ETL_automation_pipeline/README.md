@@ -1,4 +1,4 @@
-![Correlation Heatmap](correlation_heatmap.png)
+
 
 📊 Automated Survey Data Pipeline (ETL)
 A modular Python-based ETL pipeline for multi-country survey data ingestion and SQL Server integration.
